@@ -61,14 +61,12 @@ class ATM:
             else:
                 print("Geçersiz seçenek, tekrar deneyin.")
 
-# Örnek Müşteri Listesi
 musteri_listesi = [
     Musteri("Yiğit", "1234", 5000),
     Musteri("Deniz", "4321", 12000),
     Musteri("Arda", "2026", 150)
 ]
 
-# Sistemi Başlatma
 bankamatik = ATM(musteri_listesi)
 
 if bankamatik.giris_yap():
