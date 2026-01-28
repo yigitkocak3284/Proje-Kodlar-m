@@ -1,0 +1,75 @@
+import time
+
+class Musteri:
+    def __init__(self, ad, sifre, bakiye=0):
+        self.ad = ad
+        self.sifre = sifre
+        self.bakiye = bakiye
+
+class ATM:
+    def __init__(self, musteriler):
+        self.musteriler = musteriler
+        self.mevcut_musteri = None
+
+    def giris_yap(self):
+        print("--- KOÇAK BANKASINA HOŞGELDİNİZ ---")
+        deneme_hakki = 3
+        
+        while deneme_hakki > 0:
+            isim = input("Müşteri adınız: ")
+            sifre = input("Şifreniz: ")
+            
+            for musteri in self.musteriler:
+                if musteri.ad == isim and musteri.sifre == sifre:
+                    self.mevcut_musteri = musteri
+                    print(f"\nGiriş Başarılı! Hoşgeldin {musteri.ad}\n")
+                    return True
+            
+            deneme_hakki -= 1
+            print(f"Hatalı kullanıcı adı veya şifre. Kalan hak: {deneme_hakki}")
+        
+        print("Kartınız bloke oldu. Lütfen şubeye başvurunuz.")
+        return False
+
+    def menu_goster(self):
+        while True:
+            print("-" * 30)
+            print("1. Bakiye Sorgula\n2. Para Yatır\n3. Para Çek\n4. Çıkış")
+            secim = input("Lütfen yapmak istediğiniz işlemi seçin: ")
+
+            if secim == "1":
+                print(f"Güncel Bakiyeniz: {self.mevcut_musteri.bakiye} TL")
+            
+            elif secim == "2":
+                miktar = float(input("Yatırmak istediğiniz tutar: "))
+                self.mevcut_musteri.bakiye += miktar
+                print(f"Yeni bakiyeniz: {self.mevcut_musteri.bakiye} TL")
+            
+            elif secim == "3":
+                miktar = float(input("Çekmek istediğiniz tutar: "))
+                if miktar > self.mevcut_musteri.bakiye:
+                    print("Yetersiz bakiye!")
+                else:
+                    self.mevcut_musteri.bakiye -= miktar
+                    print(f"Para çekme işlemi başarılı. Kalan bakiye: {self.mevcut_musteri.bakiye} TL")
+            
+            elif secim == "4":
+                print("Bilgileriniz güncelleniyor ve çıkış yapılıyor...")
+                time.sleep(1)
+                print("İyi günler dileriz!")
+                break
+            else:
+                print("Geçersiz seçenek, tekrar deneyin.")
+
+# Örnek Müşteri Listesi
+musteri_listesi = [
+    Musteri("Yiğit", "1234", 5000),
+    Musteri("Deniz", "4321", 12000),
+    Musteri("Arda", "2026", 150)
+]
+
+# Sistemi Başlatma
+bankamatik = ATM(musteri_listesi)
+
+if bankamatik.giris_yap():
+    bankamatik.menu_goster()
