@@ -1,0 +1,95 @@
+import time
+
+class Ilac:
+    def __init__(self, ad, fiyat, stok, receteli_mi=False):
+        self.ad = ad
+        self.fiyat = fiyat
+        self.stok = stok
+        self.receteli_mi = receteli_mi
+
+    def __str__(self):
+        tip = "Reçeteli" if self.receteli_mi else "Reçetesiz"
+        return f"{self.ad:<15} | Fiyat: {self.fiyat:>6.2f} TL | Stok: {self.stok:>4} | Tip: {tip}"
+
+class EczaneYonetimi:
+    def __init__(self):
+        self.envanter = {}
+        self.kasa = 0.0
+
+    def ilac_ekle(self, ilac):
+        if ilac.ad in self.envanter:
+            self.envanter[ilac.ad].stok += ilac.stok
+        else:
+            self.envanter[ilac.ad] = ilac
+
+    def stok_listele(self):
+        print("\n" + "="*55)
+        print(f"{'İlaç Adı':<15} | {'Birim Fiyat':<12} | {'Adet':<6} | {'Tür'}")
+        print("-" * 55)
+        for ilac in self.envanter.values():
+            print(ilac)
+        print("="*55)
+
+    def satis_yap(self):
+        ilac_adi = input("Satılacak ilacın adı: ").capitalize()
+        
+        if ilac_adi in self.envanter:
+            ilac = self.envanter[ilac_adi]
+            
+            if ilac.stok <= 0:
+                print("Hata: Bu ilaçtan stokta kalmamış!")
+                return
+
+            if ilac.receteli_mi:
+                onay = input("Bu ilaç REÇETELİDİR. Reçete ibraz edildi mi? (e/h): ").lower()
+                if onay != 'e':
+                    print("Uyarı: Reçetesiz bu ilaç satılamaz!")
+                    return
+
+            adet = int(input(f"Kaç adet satılacak? (Mevcut: {ilac.stok}): "))
+            
+            if adet <= ilac.stok:
+                toplam_tutar = adet * ilac.fiyat
+                ilac.stok -= adet
+                self.kasa += toplam_tutar
+                print(f"İşlem Başarılı! Toplam Tutar: {toplam_tutar:.2f} TL")
+            else:
+                print("Hata: Stok miktarından fazla satış yapılamaz.")
+        else:
+            print("Hata: İlaç envanterde bulunamadı.")
+
+# --- Sistemi Başlatma ve Veri Girişi ---
+eczane = EczaneYonetimi()
+
+# Başlangıç Stokları
+eczane.ilac_ekle(Ilac("Parol", 45.50, 100, False))
+eczane.ilac_ekle(Ilac("Augmentin", 120.00, 20, True))
+eczane.ilac_ekle(Ilac("Arveles", 65.00, 50, False))
+eczane.ilac_ekle(Ilac("Xanax", 85.00, 10, True))
+
+def ana_menu():
+    while True:
+        print("\n--- ECZANE OTOMASYON SİSTEMİ ---")
+        print("1. Stok Listele\n2. İlaç Satışı Yap\n3. Yeni Stok Ekle\n4. Kasa Durumu\n5. Çıkış")
+        secim = input("Seçiminiz: ")
+
+        if secim == "1":
+            eczane.stok_listele()
+        elif secim == "2":
+            eczane.satis_yap()
+        elif secim == "3":
+            ad = input("İlaç Adı: ").capitalize()
+            fiyat = float(input("Fiyatı: "))
+            adet = int(input("Adet: "))
+            recete = input("Reçeteli mi? (e/h): ").lower() == 'e'
+            eczane.ilac_ekle(Ilac(ad, fiyat, adet, recete))
+            print("Stok güncellendi.")
+        elif secim == "4":
+            print(f"\nKasada biriken toplam tutar: {eczane.kasa:.2f} TL")
+        elif secim == "5":
+            print("Sistemden çıkılıyor...")
+            break
+        else:
+            print("Geçersiz seçim!")
+
+ana_menu()
