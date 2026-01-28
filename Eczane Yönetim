@@ -58,10 +58,8 @@ class EczaneYonetimi:
         else:
             print("Hata: İlaç envanterde bulunamadı.")
 
-# --- Sistemi Başlatma ve Veri Girişi ---
 eczane = EczaneYonetimi()
 
-# Başlangıç Stokları
 eczane.ilac_ekle(Ilac("Parol", 45.50, 100, False))
 eczane.ilac_ekle(Ilac("Augmentin", 120.00, 20, True))
 eczane.ilac_ekle(Ilac("Arveles", 65.00, 50, False))
